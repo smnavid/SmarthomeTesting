@@ -1,0 +1,79 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.1'
+    }
+}
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '4.0.2'
+    id "com.github.spotbugs" version "4.7.0"
+    id "org.sonarqube" version "3.0"
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'info.solidsoft.pitest'
+
+group 'Tartan'
+version '1.0-SNAPSHOT'
+
+mainClassName = 'tartan.smarthome.TartanHomeApplication'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    // JAX-B dependencies for JDK 9+
+    implementation "javax.xml.bind:jaxb-api:2.2.11"
+    implementation "com.sun.xml.bind:jaxb-core:2.2.11"
+    implementation "com.sun.xml.bind:jaxb-impl:2.2.11"
+    implementation "javax.activation:activation:1.1.1"
+    testImplementation 'junit:junit:4.12'
+
+    //compile group: 'edu.cmu.iot', name: 'IoTController', version: '1.0'
+    compile group: 'io.dropwizard', name: 'dropwizard-bom', version: '1.0.0'
+    compile group: 'io.dropwizard', name: 'dropwizard-core', version: '1.0.0'
+    compile group: 'io.dropwizard', name: 'dropwizard-views-freemarker', version: '1.0.0'
+    compile group: 'io.dropwizard', name: 'dropwizard-auth', version: '1.0.0'
+    compile group: 'io.dropwizard', name: 'dropwizard-hibernate', version: '1.0.0'
+    compile group: 'io.dropwizard', name: 'dropwizard-assets', version: '0.9.1'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // Mockito
+    testCompile "org.mockito:mockito-core:1.+"
+//    testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: '1.0.0'
+}
+
+run {
+    args = ['server', 'config.yml']
+}
+
+shadowJar {
+    mergeServiceFiles()
+    manifest {
+        attributes 'Implementation-Title': rootProject.name
+        attributes 'Implementation-Version': rootProject.version
+        attributes 'Implementation-Vendor-Id': rootProject.group
+        attributes 'Created-By': 'Gradle ' + gradle.gradleVersion
+        attributes 'Main-Class': mainClassName
+    }
+    archiveName rootProject.name + '-' + rootProject.version + '.jar'
+}
+
+pitest {
+    targetClasses = ['tartan.smarthome.resources.StaticTartanStateEvaluator']
+    targetTests = ['tartan.smarthome.resources.*']
+    timestampedReports = false
+}
+
+spotbugs {
+    ignoreFailures = true
+}

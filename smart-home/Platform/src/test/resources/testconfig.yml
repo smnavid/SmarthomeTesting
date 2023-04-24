@@ -1,0 +1,65 @@
+# the houses currently supported/connected to the service
+houses:
+    # Each house has a name
+  - name: mse
+    # a network address/port combination
+    address: localhost
+    port: 5050
+
+    # a set of default user
+    user: admin
+    password: 1234
+
+    # the default configuration for the house
+
+    # we must know the target temperature to start
+    targetTemp: 70
+
+    # the default alarm delay
+    alarmDelay: 30
+
+    # and the super secret passcode to disable the alarm
+    alarmPasscode: stop
+
+    nightStartTime: '22:00'
+    nightEndTime: '08:00'
+
+    # Next house
+  - name: cmu
+    address: localhost
+    port: 5051
+
+    user: admin
+    password: 5678
+    targetTemp: 70
+    alarmDelay: 30
+    alarmPasscode: quit
+
+    nightStartTime: '22:00'
+    nightEndTime: '08:00'
+
+# how many seconds between database snapshots
+historyTimer: 5
+
+# configuration information for the database. This setup uses MySQL with a database named 'TartanHome'
+# but any DBMS that supports JDBC can be used
+database:
+    # the name of the JDBC driver to use
+    driverClass: com.mysql.cj.jdbc.Driver
+
+    # the DB username
+    user: tartan
+
+    # the DB password
+    password: tartan1234
+
+    # the JDBC URL; the database is called TartanHome; #mysql-container
+    url: jdbc:mysql://localhost/TartanHome?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+
+    # Allow Hibernate to create tables
+    properties:
+        hibernate.dialect: org.hibernate.dialect.MySQLDialect
+
+        # leave it to hibernate to update/create the database. Warning, this is generally
+        # considered a bad setting for production
+        hibernate.hbm2ddl.auto: update

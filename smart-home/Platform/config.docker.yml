@@ -1,0 +1,89 @@
+# the houses currently supported/connected to the service
+houses:
+    # Each house has a name
+  - name: mse
+    # a network address/port combination
+    address: house-mse
+    port: 5050
+
+    # a set of default user
+    user: admin
+    password: 1234
+
+    # the default configuration for the house
+
+    # we must know the target temperature to start
+    targetTemp: 70
+
+    # the default alarm delay
+    alarmDelay: 30
+
+    # and the super secret passcode to disable the alarm
+    alarmPasscode: stop
+
+    # A/B Testing Group 1: Control Group | No Changes for this house
+    groupExperiment: 1
+
+    nightStartTime: '22:00'
+    nightEndTime: '08:00'
+
+    # Next house
+  - name: cmu
+    address: house-cmu
+    port: 5050
+
+    user: admin
+    password: 5678
+    targetTemp: 70
+    alarmDelay: 30
+    alarmPasscode: quit
+
+    # A/B Testing Group 2: Test Group | The amount being charged will be shown for this house
+    groupExperiment: 2
+
+    nightStartTime: '22:00'
+    nightEndTime: '08:00'
+
+
+  # Next house
+  - name: abc
+    address: house-abc
+    port: 5050
+
+    user: admin
+    password: 2345
+    targetTemp: 70
+    alarmDelay: 30
+    alarmPasscode: quit
+
+    # A/B Testing Group 3: Test Group | How long the heater/chiller have been running will be shown for this house
+    groupExperiment: 3
+
+    nightStartTime: '22:00'
+    nightEndTime: '08:00'
+
+# how many seconds between database snapshots
+historyTimer: 5
+
+# configuration information for the database. This setup uses MySQL with a database named 'TartanHome'
+# but any DBMS that supports JDBC can be used
+database:
+    # the name of the JDBC driver to use
+    driverClass: com.mysql.cj.jdbc.Driver
+
+    # the DB username
+    user: root
+
+    # the DB password
+    password: tmp
+
+    # the JDBC URL; the database is called TartanHome; #mysql-container
+    url: jdbc:mysql://mysql-container/TartanHome
+
+    # Allow Hibernate to create tables
+    properties:
+        hibernate.dialect: org.hibernate.dialect.MySQLDialect
+
+        # leave it to hibernate to update/create the database. Warning, this is generally
+        # considered a bad setting for production
+        hibernate.hbm2ddl.auto: update
